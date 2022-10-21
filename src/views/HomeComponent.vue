@@ -1,5 +1,4 @@
 <template>
-
   <div class="container">
     <div>
       <h1 class="lable">
@@ -9,76 +8,63 @@
       <div class="container_form_input">
         <form class="form_input">
           <div class="form_input_container">
-            <p>Name:</p>
-            <input type="text" placeholder="Please enter your name..." class="form_input_name" v-model="todoItem.name"
-              required @keydown="handleInputName" />
-            <div v-if="isErrorName">
+            <p>Title:</p>
+            <input
+              type="text"
+              placeholder="Please enter your title..."
+              class="form_input_title"
+              v-model="todoItem.title"
+              required
+              @keydown="handleInputTitle"
+            />
+            <div v-if="isErrorTitle">
               <p class="error">please enter this field</p>
-            </div>
-            <div v-if="isCheckName">
-              <p class="error">
-                Please enter at least 8 characters
-              </p>
-            </div>
-          </div>
-          <div class="form_input_container">
-            <p>Ages:</p>
-            <input type="number" placeholder="Please enter your age..." class="form_input_age" v-model="todoItem.age"
-              required @keydown="handleInputAge" />
-            <div v-if="isErrorAge">
-              <p class="error">please enter this field</p>
-            </div>
-            <div v-if="isCheckAge">
-              <p class="error">
-                Please re-enter your age
-              </p>
             </div>
           </div>
           <div class="form_input_container">
             <p>Discriptions:</p>
-            <input type="text" placeholder="Please enter your Discriptions..." class="form_input_age"
-              v-model="todoItem.discriptions" required @keydown="handleInputDiscriptions" />
+            <input
+              type="text"
+              placeholder="Please enter your Discriptions..."
+              class="form_input_title"
+              v-model="todoItem.discriptions"
+              required
+              @keydown="handleInputDiscriptions"
+            />
             <div v-if="isErrorDiscriptions">
               <p class="error">please enter this field</p>
             </div>
           </div>
         </form>
       </div>
-      <!-- <input type="submit" value="addTodo"  /> -->
       <button class="btn_user" @click="addTodo">Submit</button>
     </div>
     <div v-if="todoList.length">
-      <TodosComponent :listUser="todoList" @editUser="setUser" />
+      <TodoListComponents :listWorks="todoList" @editUser="setUser" />
     </div>
   </div>
 </template>
 
 <script>
-import TodosComponent from "./TodosComponent.vue";
+import TodoListComponents from "./TodoListComponents.vue";
 import { v4 as uuidv4 } from "uuid";
 export default {
   name: "TodoList",
   props: {},
   components: {
-    TodosComponent,
+    TodoListComponents,
   },
   data() {
     return {
       todoList: [],
-      isName: false,
-      show: false,
-      isErrorName: false,
-      isErrorAge: false,
-      isCheckAge: false,
-      isCheckName:false,
+      isErrorTitle: false,
       isErrorDiscriptions: false,
       todoItem: {
-        name: "",
-        age: "",
+        title: "",
         id: "",
         discriptions: "",
       },
-      editMode: false,
+      months: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
     };
   },
   watch: {
@@ -92,60 +78,51 @@ export default {
   },
   methods: {
     setUser(val) {
-      this.todoItem = { ...val }
+      this.todoItem = { ...val };
+      this.isErrorDiscriptions = false;
+      this.isErrorTitle = false;
     },
-    handleInputName() {
-      this.isErrorName = false
-    },
-    handleInputAge() {
-      this.isErrorAge = false
-      this.isCheckAge = false
+    handleInputTitle() {
+      this.isErrorTitle = false;
     },
     handleInputDiscriptions() {
-      this.isErrorDiscriptions = false
+      this.isErrorDiscriptions = false;
     },
     addTodo: function () {
       if (this.todoItem.id) {
-        this.todoList = this.todoList.map(item => {
+        this.todoList = this.todoList.map((item) => {
           if (item.id === this.todoItem.id) {
-            return { ...this.todoItem }
+            return { ...this.todoItem };
           } else {
-            return item
+            return item;
           }
-        })
-        this.todoItem.name = "";
-        this.todoItem.age = "";
+        });
+        this.todoItem.title = "";
         this.todoItem.id = "";
         this.todoItem.discriptions = "";
-        return
-      }
-      if (this.todoItem.name === "" || this.todoItem.age === "" || this.todoItem.discriptions === "") {
-        if (this.todoItem.name === "") this.isErrorName = true
-        if (this.todoItem.age === "") this.isErrorAge = true
-        if (this.todoItem.discriptions === "") this.isErrorDiscriptions = true
         return;
       }
-      if (Number(this.todoItem.age) < 0) {
-        this.isCheckAge = true
-        return
+      if (this.todoItem.title === "" || this.todoItem.discriptions === "") {
+        if (this.todoItem.title === "") this.isErrorTitle = true;
+        if (this.todoItem.discriptions === "") this.isErrorDiscriptions = true;
+        return;
       }
-      if(this.todoItem.name.length < 8) {
-        this.isCheckName = true
-        return
-      }
+
       this.todoList.push({
-        name: this.todoItem.name,
-        age: this.todoItem.age,
+        date:
+          this.months[new Date().getMonth()] +
+          "-" +
+          new Date().getDay() +
+          "-" +
+          new Date().getFullYear(),
+        title: this.todoItem.title,
         discriptions: this.todoItem.discriptions,
         id: uuidv4(),
       });
-      this.todoItem.name = "";
-      this.todoItem.age = "";
+      this.todoItem.title = "";
       this.todoItem.id = "";
       this.todoItem.discriptions = "";
-      console.log("this.todoList", this.todoList);
     },
-
   },
 };
 </script>
@@ -171,7 +148,7 @@ export default {
   align-items: center;
 }
 
-.lable>p {
+.lable > p {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -193,8 +170,7 @@ h2 {
   font-weight: 800;
 }
 
-.form_input_name,
-.form_input_age {
+.form_input_title {
   width: 55%;
   height: 32px;
   border-radius: 10px;
@@ -207,7 +183,7 @@ h2 {
   margin-bottom: 2%;
 }
 
-.form_input_container>p {
+.form_input_container > p {
   margin-right: 5%;
   width: 50px;
   display: inline-block;
@@ -232,7 +208,7 @@ h2 {
   font-size: 12px;
 }
 
-/* reposive */
+/* responsive */
 @media screen and (max-width: 1024px) {
   .lable {
     font-size: 36px;
@@ -283,6 +259,5 @@ h2 {
   input::placeholde {
     font-size: 10px;
   }
-
 }
 </style>

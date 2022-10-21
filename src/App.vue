@@ -1,22 +1,20 @@
 <template>
   <div id="app">
-    <TodoList />
+    <HomeComponent />
   </div>
 </template>
 
 <script>
-import TodoList from './components/TodoList.vue'
+import HomeComponent from './views/HomeComponent.vue'
 export default {
   name: 'App',
   components: {
-    TodoList,
+    HomeComponent,
   },
 
 }
 </script>
 
 <style>
-/*html{*/
-/*  background-image: linear-gradient(to right, #3f87a6, #ebf8e1);*/
-/*}*/
+
 </style>
